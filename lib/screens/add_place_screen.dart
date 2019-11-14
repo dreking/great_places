@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/great_places.dart';
 import '../widgets/image_input.dart';
 
 class AddPlaceScreen extends StatefulWidget {
@@ -24,7 +26,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: Text('Error'),
-          content: Text('You didnt pick an image'),
+          content: Text('Please fill all fields'),
           actions: <Widget>[
             FlatButton(
               child: Text('Okay'),
@@ -35,6 +37,10 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           ],
         ),
       );
+    } else {
+      Provider.of<GreatPlaces>(context, listen: false)
+          .addPlace(_titleController.text, _pickedImage);
+      Navigator.of(context).pop();
     }
   }
 
