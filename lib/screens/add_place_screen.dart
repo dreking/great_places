@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../widgets/image_input.dart';
@@ -9,7 +11,32 @@ class AddPlaceScreen extends StatefulWidget {
 }
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
-  TextEditingController _titleController;
+  final _titleController = TextEditingController();
+  File _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  void _savePlace(BuildContext context) {
+    if (_titleController.text.isEmpty || _pickedImage == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Error'),
+          content: Text('You didnt pick an image'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +57,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                     controller: _titleController,
                   ),
                   SizedBox(height: 10),
-                  ImageInput(),
+                  ImageInput(_selectImage),
                 ],
               ),
             ),
@@ -38,7 +65,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           RaisedButton.icon(
             icon: Icon(Icons.add),
             label: Text('Add Place'),
-            onPressed: () {},
+            onPressed: () => _savePlace(context),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             color: Theme.of(context).accentColor,
           ),
