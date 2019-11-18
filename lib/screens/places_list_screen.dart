@@ -19,22 +19,33 @@ class PlacesListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (ctx, greatPlaces, child) => greatPlaces.items.length <= 0
-            ? child
-            : ListView.builder(
-                itemCount: greatPlaces.items.length,
-                itemBuilder: (ctx, i) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: FileImage(greatPlaces.items[i].image),
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false)
+            .fetchAndSetPlaces(),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Consumer<GreatPlaces>(
+                    builder: (ctx, greatPlaces, child) =>
+                        greatPlaces.items.length <= 0
+                            ? child
+                            : ListView.builder(
+                                itemCount: greatPlaces.items.length,
+                                itemBuilder: (ctx, i) => ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        FileImage(greatPlaces.items[i].image),
+                                  ),
+                                  title: Text(greatPlaces.items[i].title),
+                                  onTap: () {},
+                                ),
+                              ),
+                    child: Center(
+                      child: Text('No places added yet! Please add some'),
+                    ),
                   ),
-                  title: Text(greatPlaces.items[i].title),
-                  onTap: () {},
-                ),
-              ),
-        child: Center(
-          child: Text('No places added yet! Please add some'),
-        ),
       ),
     );
   }
